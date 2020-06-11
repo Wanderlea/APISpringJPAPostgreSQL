@@ -6,8 +6,12 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -23,9 +27,11 @@ public class IndexController {
 	@Autowired
 	private UserRepository userRepository;
 	
+	/*** Example  GET ***/
+	
 	/* Restfull service */
 	@GetMapping(value = "/{id}", produces = "application/json")
-	public ResponseEntity<Users> init(@PathVariable (value = "id") Long id) {
+	public ResponseEntity<Users> find(@PathVariable (value = "id") Long id) {
 		
 		Optional<Users> users = userRepository.findById(id);
 		
@@ -41,5 +47,55 @@ public class IndexController {
 		return new ResponseEntity<List<Users>>(list, (HttpStatus.OK));
 	}
 	
-
+	/*** Example  POST ***/
+	
+	@PostMapping(value = "/", produces = "application/json")
+	public ResponseEntity<Users> register(@RequestBody Users users){
+		
+		Users userSalve = userRepository.save(users);
+		return new ResponseEntity<Users>(userSalve, HttpStatus.OK);
+		
+	}
+	
+	@PostMapping(value = "/{iduser}/idsale/{idsale}", produces = "application/json")
+	public ResponseEntity<Users> registerSale(@PathVariable Long iduser, @PathVariable Long idsale){
+		
+		return new ResponseEntity("id user :" + iduser + " idvenda "+ idsale, HttpStatus.OK);
+		
+	}
+	
+	/*** Example  PUT ***/
+	
+	@PutMapping(value = "/", produces = "application/json")
+	public ResponseEntity<Users> update(@RequestBody Users users){
+		
+		Users userSalve = userRepository.save(users);
+		return new ResponseEntity<Users>(userSalve, HttpStatus.OK);
+		
+	}
+	
+	@PutMapping(value = "/{iduser}/idsale/{idsale}", produces = "application/json")
+	public ResponseEntity<Users> updateSale(@PathVariable Long iduser, @PathVariable Long idsale){
+		
+		return new ResponseEntity("Update Venda "+ idsale, HttpStatus.OK);
+		
+	}
+	
+	/*** Example  DELETE ***/
+		
+	@DeleteMapping(value = "/{id}", produces = "application/text")
+	public String delete(@PathVariable (value = "id") Long id) {
+		
+		userRepository.deleteById(id);
+		
+		return "OK";
+	}
+	
+	@DeleteMapping(value = "/{id}/sale", produces = "application/text")
+	public String deleteSale(@PathVariable (value = "id") Long id) {
+		
+		userRepository.deleteById(id);
+		
+		return "OK";
+	}
 }
