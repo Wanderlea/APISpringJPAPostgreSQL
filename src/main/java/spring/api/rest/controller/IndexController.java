@@ -1,43 +1,45 @@
 package spring.api.rest.controller;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import spring.api.rest.model.Users;
+import spring.api.rest.repository.UserRepository;
 
 //annotation is used to create RESTful web services 
 @RestController
 @RequestMapping(value = "/user")
 public class IndexController {
 	
+	//This annotation allows Spring to resolve and inject collaborating beans into your bean.
+	@Autowired
+	private UserRepository userRepository;
+	
 	/* Restfull service */
-	@GetMapping(value = "/", produces = "application/json")
-	public ResponseEntity<Users> init() {
+	@GetMapping(value = "/{id}", produces = "application/json")
+	public ResponseEntity<Users> init(@PathVariable (value = "id") Long id) {
 		
-		Users user = new Users();
-		user.setId(1L);
-		user.setLogin("Admin");
-		user.setName("Administrator");
-		user.setPassword("123");
+		Optional<Users> users = userRepository.findById(id);
 		
-		Users user1 = new Users();
-		user1.setId(2L);
-		user1.setLogin("Admin1");
-		user1.setName("Administrator1");
-		user1.setPassword("1234");
-		
-		List<Users> users = new ArrayList<Users>();
-		users.add(user);
-		users.add(user1);
-
-		return new ResponseEntity(users, HttpStatus.OK);
+		return new ResponseEntity<Users>(users.get(), HttpStatus.OK);
 	}
+	
+	//Returns all users
+	@GetMapping(value = "/", produces = "application/json")
+	public ResponseEntity<List<Users>> user(){
+		
+		List<Users> list = (List<Users>) userRepository.findAll();
+		
+		return new ResponseEntity<List<Users>>(list, (HttpStatus.OK));
+	}
+	
 
 }
