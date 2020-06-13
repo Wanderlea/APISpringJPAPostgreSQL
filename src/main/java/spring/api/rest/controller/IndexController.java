@@ -29,7 +29,7 @@ public class IndexController {
 	
 	/*** Example  GET ***/
 	
-	/* Restfull service */
+	/* Restful service */
 	@GetMapping(value = "/{id}", produces = "application/json")
 	public ResponseEntity<Users> find(@PathVariable (value = "id") Long id) {
 		
