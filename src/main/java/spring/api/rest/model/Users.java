@@ -51,6 +51,13 @@ public class Users implements Serializable{
 	public void setName(String name) {
 		this.name = name;
 	}
+	
+	public List<Telephone> getTelephones() {
+		return telephones;
+	}
+	public void setTelephones(List<Telephone> telephones) {
+		this.telephones = telephones;
+	}
 	@Override
 	public int hashCode() {
 		final int prime = 31;

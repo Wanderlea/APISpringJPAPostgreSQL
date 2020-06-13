@@ -51,6 +51,15 @@ public class IndexController {
 	
 	@PostMapping(value = "/", produces = "application/json")
 	public ResponseEntity<Users> register(@RequestBody Users users){
+	
+		/*
+		for(int pos = 0; pos < users.getTelephones().size(); pos ++) {
+			users.getTelephones().get(pos).setUsers(users);
+		} 
+		*/
+		
+		//associate with phone
+		users.getTelephones().forEach(t -> t.setUsers(users));
 		
 		Users userSalve = userRepository.save(users);
 		return new ResponseEntity<Users>(userSalve, HttpStatus.OK);
@@ -69,6 +78,8 @@ public class IndexController {
 	@PutMapping(value = "/", produces = "application/json")
 	public ResponseEntity<Users> update(@RequestBody Users users){
 		
+		//associate with phone
+		users.getTelephones().forEach(t -> t.setUsers(users));
 		Users userSalve = userRepository.save(users);
 		return new ResponseEntity<Users>(userSalve, HttpStatus.OK);
 		
