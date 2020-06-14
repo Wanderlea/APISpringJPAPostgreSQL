@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Insert title here</title>
+<script src="https://code.jquery.com/jquery-3.2.1.min.js" 
+integrity="sha384-xBuQ/xzmlsLoJpyjoggmTEz8OWUFM0/RC5BsqQBDX2v5cMvDHcMakNTNrHIW2I5f"
+crossorigin="anonymous"></script>
+</head>
+<body>
+
+	<script>
+	
+		$(document).ready (
+			
+			function(){
+				$.ajax({
+					url : "http://localhost:8080/springrestapi/user/", method: "GET"
+				}).then (function (data, status, info) {
+					
+				});
+			}	
+		);
+	
+	</script>
+
+</body>
+</html>

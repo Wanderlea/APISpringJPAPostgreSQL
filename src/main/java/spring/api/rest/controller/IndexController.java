@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,8 +19,10 @@ import org.springframework.web.bind.annotation.RestController;
 import spring.api.rest.model.Users;
 import spring.api.rest.repository.UserRepository;
 
+//access permissions
+@CrossOrigin
 //annotation is used to create RESTful web services 
-@RestController
+@RestController 
 @RequestMapping(value = "/user")
 public class IndexController {
 	
@@ -49,6 +52,8 @@ public class IndexController {
 	
 	/*** Example  POST ***/
 	
+	//access permissions only for local machine
+	@CrossOrigin(origins = "localhost:8080")
 	@PostMapping(value = "/", produces = "application/json")
 	public ResponseEntity<Users> register(@RequestBody Users users){
 	
