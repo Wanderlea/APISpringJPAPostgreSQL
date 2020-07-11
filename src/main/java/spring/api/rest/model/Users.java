@@ -1,18 +1,30 @@
 package spring.api.rest.model;
 
-import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import javax.persistence.CascadeType;
+import javax.persistence.ConstraintMode;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
+import javax.persistence.UniqueConstraint;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import net.bytebuddy.agent.builder.AgentBuilder.RawMatcher.Inversion;
 
 @Entity
-public class Users implements Serializable{
+public class Users implements UserDetails{
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -21,11 +33,37 @@ public class Users implements Serializable{
 	private Long id;
 	
 	private String login;
-	private String password;
+	private String passwordUser;
 	private String name;
 	
 	@OneToMany(mappedBy = "users", orphanRemoval = true, cascade = CascadeType.ALL)
 	private List<Telephone> telephones = new ArrayList<Telephone>();
+	
+	@OneToMany(fetch = FetchType.LAZY)
+	@JoinTable(
+			name = "user_role", 
+			uniqueConstraints = @UniqueConstraint (
+			columnNames = {"user_id","role_id"}, 
+			name = "unique_role_user"),
+			joinColumns = @JoinColumn(
+					name = "user_id", 
+					referencedColumnName = "id", 
+					table = "user", 
+					unique = false,
+					foreignKey = @ForeignKey(
+							name = "user_fk", 
+							value = ConstraintMode.CONSTRAINT)),
+			inverseJoinColumns = @JoinColumn(
+					name = "role_id",
+					referencedColumnName = "id",
+					table = "role", 
+					unique = false,
+					updatable = false,
+					foreignKey = @ForeignKey(
+							name="role_fk",
+							value = ConstraintMode.CONSTRAINT)))
+	
+	private List<Role> roles;
 	
 	public Long getId() {
 		return id;
@@ -39,11 +77,11 @@ public class Users implements Serializable{
 	public void setLogin(String login) {
 		this.login = login;
 	}
-	public String getPassword() {
-		return password;
+	public String getPasswordUser() {
+		return passwordUser;
 	}
-	public void setPassword(String password) {
-		this.password = password;
+	public void setPassword(String passwordUser) {
+		this.passwordUser = passwordUser;
 	}
 	public String getName() {
 		return name;
@@ -79,6 +117,38 @@ public class Users implements Serializable{
 				return false;
 		} else if (!id.equals(other.id))
 			return false;
+		return true;
+	}
+	
+	/*User Acess ROLE_ */
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		return roles;
+	}
+	
+	@Override
+	public String getPassword() {
+		return this.passwordUser;
+	}
+	
+	@Override
+	public String getUsername() {
+		return this.login;
+	}
+	@Override
+	public boolean isAccountNonExpired() {
+		return true;
+	}
+	@Override
+	public boolean isAccountNonLocked() {
+		return true;
+	}
+	@Override
+	public boolean isCredentialsNonExpired() {
+		return true;
+	}
+	@Override
+	public boolean isEnabled() {
 		return true;
 	}
 }
