@@ -1,11 +1,11 @@
 package spring.api.rest.security;
 
+import java.io.IOException;
 import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.context.ApplicationContext;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
@@ -30,7 +30,7 @@ public class JWTTokenAutenticationService {
 	private static final String HEADER_STRING = "Authorization";
 
 	/* Generating authentication token and adding to the header and response Http */
-	public void addAuthentication(HttpServletResponse response, String username) throws Exception {
+	public void addAuthentication(HttpServletResponse response, String username) throws IOException {
 
 		/* Token assembly */
 		String JWT = Jwts.builder()/* Calls the token generator */
