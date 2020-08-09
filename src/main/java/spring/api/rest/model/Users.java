@@ -13,15 +13,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinColumns;
 import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.UniqueConstraint;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
-import net.bytebuddy.agent.builder.AgentBuilder.RawMatcher.Inversion;
 
 @Entity
 public class Users implements UserDetails{
@@ -39,7 +36,7 @@ public class Users implements UserDetails{
 	@OneToMany(mappedBy = "users", orphanRemoval = true, cascade = CascadeType.ALL)
 	private List<Telephone> telephones = new ArrayList<Telephone>();
 	
-	@OneToMany(fetch = FetchType.LAZY)
+	@OneToMany(fetch = FetchType.EAGER)
 	@JoinTable(
 			name = "user_role", 
 			uniqueConstraints = @UniqueConstraint (
@@ -63,7 +60,7 @@ public class Users implements UserDetails{
 							name="role_fk",
 							value = ConstraintMode.CONSTRAINT)))
 	
-	private List<Role> roles;
+	private List<Role> roles = new ArrayList<>();
 	
 	public Long getId() {
 		return id;

@@ -45,13 +45,15 @@ public class JWTTokenAutenticationService {
 		/* Add to header http */
 		response.addHeader(HEADER_STRING, token); /* Autorization: Beare token */
 
+		liberarCORS(response);
+
 		/* Writes token as a response in the http body */
 		response.getWriter().write("{\"Authorization\": \"" + token + "\"}");
 
 	}
 
 	/* Returns the user validated with the token and if not valid, returns null */
-	public Authentication getAuthentication(HttpServletRequest request) {
+	public Authentication getAuthentication(HttpServletRequest request, HttpServletResponse response) {
 
 		/* Get the token sent in the http header */
 		String token = request.getHeader(HEADER_STRING);
@@ -66,13 +68,35 @@ public class JWTTokenAutenticationService {
 						.findUserByLogin(user);
 				/* Returns logged use */
 				if (users != null) {
-					return new UsernamePasswordAuthenticationToken(users.getLogin(), users.getPassword(), users.getAuthorities());
+					return new UsernamePasswordAuthenticationToken(
+							users.getLogin(), 
+							users.getPasswordUser(),
+							users.getAuthorities());
 				}
 			}
 		}
-
+		liberarCORS(response);
 		return null; /* Not authorized */
 
+	}
+
+	// CORS policy
+	private void liberarCORS(HttpServletResponse response) {
+		if (response.getHeader("Access-Control-Allow-Origin") == null) {
+			response.addHeader("Access-Control-Allow-Origin", "*");
+		}
+
+		if (response.getHeader("Access-Control-Allow-Headers") == null) {
+			response.addHeader("Access-Control-Allow-Headers", "*");
+		}
+
+		if (response.getHeader("Access-Control-Request-Headers") == null) {
+			response.addHeader("Access-Control-Request-Headers", "*");
+		}
+
+		if (response.getHeader("Access-Control-Allow-Methods") == null) {
+			response.addHeader("Access-Control-Allow-Methods", "*");
+		}
 	}
 
 }

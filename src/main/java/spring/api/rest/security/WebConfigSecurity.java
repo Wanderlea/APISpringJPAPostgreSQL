@@ -10,6 +10,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.http.HttpMethod;
 
 import spring.api.rest.service.ImplementationUserDetailsService;
 
@@ -29,7 +30,10 @@ public class WebConfigSecurity extends WebSecurityConfigurerAdapter{
 		
 		/*Enables permission to access the system's home page*/
 		.disable().authorizeRequests().antMatchers("/").permitAll()
-		.antMatchers("/index").permitAll()
+		.antMatchers("/index", "/recuperar/**").permitAll()
+		
+		// Release of CORS
+		.antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 		
 		/*Logout URL - redirects after user logs out of the system*/
 		.anyRequest().authenticated().and().logout().logoutSuccessUrl("/index")
