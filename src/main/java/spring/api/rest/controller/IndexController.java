@@ -54,7 +54,7 @@ public class IndexController {
 	/*** Example  POST ***/
 	
 	//access permissions only for local machine
-	@CrossOrigin(origins = "localhost:8080")
+	//@CrossOrigin(origins = "localhost:8080")
 	@PostMapping(value = "/", produces = "application/json")
 	public ResponseEntity<Users> register(@RequestBody Users users){
 	
@@ -67,8 +67,8 @@ public class IndexController {
 		//associate with phone
 		users.getTelephones().forEach(t -> t.setUsers(users));
 		
-		String passwordEncrypted = new BCryptPasswordEncoder().encode(users.getPassword());
-		users.setPassword(passwordEncrypted);
+		String passwordEncrypted = new BCryptPasswordEncoder().encode(users.getPasswordUser());
+		users.setPasswordUser(passwordEncrypted);
 		Users userSalve = userRepository.save(users);
 		return new ResponseEntity<Users>(userSalve, HttpStatus.OK);
 		
@@ -88,8 +88,13 @@ public class IndexController {
 		
 		//associate with phone
 		users.getTelephones().forEach(t -> t.setUsers(users));
-		String passwordEncrypted = new BCryptPasswordEncoder().encode(users.getPassword());
-		users.setPassword(passwordEncrypted);
+		
+		Users userTemporary = userRepository.findUserByLogin(users.getLogin());
+		if (!userTemporary.getPasswordUser().equals(users.getPasswordUser())) {
+			String passwordEncrypted = new BCryptPasswordEncoder().encode(users.getPasswordUser());
+			users.setPasswordUser(passwordEncrypted);
+		}
+		
 		Users userSalve = userRepository.save(users);
 		return new ResponseEntity<Users>(userSalve, HttpStatus.OK);
 		
