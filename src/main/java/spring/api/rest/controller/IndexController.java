@@ -34,11 +34,20 @@ public class IndexController {
 	/*** Example  GET ***/
 	
 	/* Restful service */
-	@GetMapping(value = "/{id}", produces = "application/json")
-	public ResponseEntity<Users> find(@PathVariable (value = "id") Long id) {
+	@GetMapping(value = "v1/{id}", produces = "application/json")
+	public ResponseEntity<Users> findV1(@PathVariable (value = "id") Long id) {
 		
 		Optional<Users> users = userRepository.findById(id);
+		System.out.println("Running version 1");
+		return new ResponseEntity<Users>(users.get(), HttpStatus.OK);
+	}
+	
+	/* Restful service */
+	@GetMapping(value = "v2/{id}", produces = "application/json")
+	public ResponseEntity<Users> findV2(@PathVariable (value = "id") Long id) {
 		
+		Optional<Users> users = userRepository.findById(id);
+		System.out.println("Running version 2");
 		return new ResponseEntity<Users>(users.get(), HttpStatus.OK);
 	}
 	
