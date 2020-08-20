@@ -34,7 +34,7 @@ public class IndexController {
 	/*** Example  GET ***/
 	
 	/* Restful service */
-	@GetMapping(value = "v1/{id}", produces = "application/json")
+	@GetMapping(value = "/{id}", produces = "application/json", headers = "X-API-Version=v1")
 	public ResponseEntity<Users> findV1(@PathVariable (value = "id") Long id) {
 		
 		Optional<Users> users = userRepository.findById(id);
@@ -43,7 +43,7 @@ public class IndexController {
 	}
 	
 	/* Restful service */
-	@GetMapping(value = "v2/{id}", produces = "application/json")
+	@GetMapping(value = "/{id}", produces = "application/json", headers = "X-API-Version=v2")
 	public ResponseEntity<Users> findV2(@PathVariable (value = "id") Long id) {
 		
 		Optional<Users> users = userRepository.findById(id);
