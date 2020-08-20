@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,7 +38,10 @@ public class IndexController {
 	
 	/* Restful service */
 	@GetMapping(value = "/{id}", produces = "application/json", headers = "X-API-Version=v1")
-	@Cacheable("cacheusers")
+	//Remove unused cache
+	@CacheEvict(value="cacheusers", allEntries = true)
+	//Checks for changes and caches
+	@CachePut("cacheusers")
 	public ResponseEntity<Users> findV1(@PathVariable (value = "id") Long id) {
 		
 		Optional<Users> users = userRepository.findById(id);
@@ -56,13 +61,16 @@ public class IndexController {
 	//Returns all users
 	/*if processing the loading of users is a slow process and we want to control it with cache to speed up the process.*/
 	@GetMapping(value = "/", produces = "application/json")
-	@Cacheable("cacheusers")
+	//Remove unused cache
+	@CacheEvict(value="cacheusers", allEntries = true)
+	//Checks for changes and caches
+	@CachePut("cacheusers")
 	public ResponseEntity<List<Users>> user() throws InterruptedException{
 		
 		List<Users> list = (List<Users>) userRepository.findAll();
 		
 		//Simulates the slow process
-		Thread.sleep(6000);
+		//Thread.sleep(6000);
 		
 		return new ResponseEntity<List<Users>>(list, (HttpStatus.OK));
 	}
