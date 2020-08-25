@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import spring.api.rest.model.Users;
+import spring.api.rest.model.UsersDTO;
 import spring.api.rest.repository.UserRepository;
 
 //access permissions
@@ -42,11 +43,11 @@ public class IndexController {
 	@CacheEvict(value="cacheusers", allEntries = true)
 	//Checks for changes and cache
 	@CachePut("cacheusers")
-	public ResponseEntity<Users> findV1(@PathVariable (value = "id") Long id) {
+	public ResponseEntity<UsersDTO> findV1(@PathVariable (value = "id") Long id) {
 		
 		Optional<Users> users = userRepository.findById(id);
 		System.out.println("Running version 1");
-		return new ResponseEntity<Users>(users.get(), HttpStatus.OK);
+		return new ResponseEntity<UsersDTO>(new UsersDTO(users.get()), HttpStatus.OK);
 	}
 	
 	/* Restful service */

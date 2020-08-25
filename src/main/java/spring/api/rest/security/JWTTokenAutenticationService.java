@@ -58,31 +58,35 @@ public class JWTTokenAutenticationService {
 
 		/* Get the token sent in the http header */
 		String token = request.getHeader(HEADER_STRING);
+		
+		try {
+			if (token != null) {
 
-		if (token != null) {
-			
-			String finalToken = token.replace(TOKEN_PREFIX, "").trim();
+				String finalToken = token.replace(TOKEN_PREFIX, "").trim();
 
-			/* Validates the user's token in the request */
-			String user = Jwts.parser().setSigningKey(SECRET).parseClaimsJws(finalToken).getBody()
-					.getSubject();
-			if (user != null) {
-				Users users = ApplicationContextLoad.getApplicationContext().getBean(UserRepository.class)
-						.findUserByLogin(user);
-				/* Returns logged use */
-				if (users != null) {
-					
-					//Compare token sent with database token
-					if (finalToken.equalsIgnoreCase(users.getToken())) {
+				/* Validates the user's token in the request */
+				String user = Jwts.parser().setSigningKey(SECRET).parseClaimsJws(finalToken).getBody().getSubject();
+				if (user != null) {
+					Users users = ApplicationContextLoad.getApplicationContext().getBean(UserRepository.class)
+							.findUserByLogin(user);
+					/* Returns logged use */
+					if (users != null) {
 
-						return new UsernamePasswordAuthenticationToken(
-								users.getLogin(), 
-								users.getPasswordUser(),
-								users.getAuthorities());
+						// Compare token sent with database token
+						if (finalToken.equalsIgnoreCase(users.getToken())) {
+
+							return new UsernamePasswordAuthenticationToken(users.getLogin(), users.getPasswordUser(),
+									users.getAuthorities());
+						}
 					}
 				}
 			}
+		} catch (io.jsonwebtoken.ExpiredJwtException e) {
+			try {
+				response.getOutputStream().println("Your token is expired, please enter a new token.");
+			} catch (IOException e1) {}
 		}
+		
 		liberarCORS(response);
 		return null; /* Not authorized */
 
