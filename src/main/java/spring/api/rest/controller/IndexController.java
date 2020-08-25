@@ -40,7 +40,7 @@ public class IndexController {
 	@GetMapping(value = "/{id}", produces = "application/json", headers = "X-API-Version=v1")
 	//Remove unused cache
 	@CacheEvict(value="cacheusers", allEntries = true)
-	//Checks for changes and caches
+	//Checks for changes and cache
 	@CachePut("cacheusers")
 	public ResponseEntity<Users> findV1(@PathVariable (value = "id") Long id) {
 		
@@ -63,7 +63,7 @@ public class IndexController {
 	@GetMapping(value = "/", produces = "application/json")
 	//Remove unused cache
 	@CacheEvict(value="cacheusers", allEntries = true)
-	//Checks for changes and caches
+	//Checks for changes and cache
 	@CachePut("cacheusers")
 	public ResponseEntity<List<Users>> user() throws InterruptedException{
 		

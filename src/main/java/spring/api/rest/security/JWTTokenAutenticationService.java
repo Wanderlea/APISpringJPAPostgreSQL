@@ -59,19 +59,26 @@ public class JWTTokenAutenticationService {
 		String token = request.getHeader(HEADER_STRING);
 
 		if (token != null) {
+			
+			String finalToken = token.replace(TOKEN_PREFIX, "").trim();
 
 			/* Validates the user's token in the request */
-			String user = Jwts.parser().setSigningKey(SECRET).parseClaimsJws(token.replace(TOKEN_PREFIX, "")).getBody()
+			String user = Jwts.parser().setSigningKey(SECRET).parseClaimsJws(finalToken).getBody()
 					.getSubject();
 			if (user != null) {
 				Users users = ApplicationContextLoad.getApplicationContext().getBean(UserRepository.class)
 						.findUserByLogin(user);
 				/* Returns logged use */
 				if (users != null) {
-					return new UsernamePasswordAuthenticationToken(
-							users.getLogin(), 
-							users.getPasswordUser(),
-							users.getAuthorities());
+					
+					//Compare token sent with database token
+					if (finalToken.equalsIgnoreCase(users.getToken())) {
+
+						return new UsernamePasswordAuthenticationToken(
+								users.getLogin(), 
+								users.getPasswordUser(),
+								users.getAuthorities());
+					}
 				}
 			}
 		}

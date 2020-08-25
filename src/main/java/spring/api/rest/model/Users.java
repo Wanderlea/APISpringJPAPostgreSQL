@@ -68,6 +68,14 @@ public class Users implements UserDetails{
 	
 	private List<Role> roles = new ArrayList<>();
 	
+	private String token = "";
+	
+	public String getToken() {
+		return token;
+	}
+	public void setToken(String token) {
+		this.token = token;
+	}
 	public Long getId() {
 		return id;
 	}
