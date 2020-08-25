@@ -44,7 +44,8 @@ public class JWTTokenAutenticationService {
 
 		/* Add to header http */
 		response.addHeader(HEADER_STRING, token); /* Autorization: Beare token */
-
+		
+		//Releasing response to different ports using the API or Web clients
 		liberarCORS(response);
 
 		/* Writes token as a response in the http body */
